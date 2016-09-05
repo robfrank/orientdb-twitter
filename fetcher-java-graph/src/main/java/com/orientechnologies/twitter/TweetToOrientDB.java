@@ -53,9 +53,9 @@ public class TweetToOrientDB {
 
         tweetsObservable.observeOn(Schedulers.computation()).forEach(status -> fetched.mark());
 
-        tweetsObservable.onBackpressureDrop(drop -> dropped.mark());
-
         tweetsObservable.observeOn(Schedulers.io()).forEach(status -> repository.persists(status));
+
+        tweetsObservable.onBackpressureDrop(drop -> dropped.mark());
 
         tweetsObservable.connect();
 

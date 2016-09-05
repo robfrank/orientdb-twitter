@@ -4,8 +4,8 @@ CREATE PROPERTY User.description STRING
 CREATE PROPERTY User.screenName STRING
 CREATE PROPERTY User.lang STRING
 CREATE PROPERTY User.location STRING
-CREATE INDEX User.userId ON User(userId) UNIQUE
-CREATE INDEX User.description ON User(description) FULLTEXT ENGINE LUCENE
+CREATE INDEX User.userId ON User(userId) UNIQUE_HASH_INDEX METADATA {ignoreNullValues: true}
+CREATE INDEX User.description ON User(description) FULLTEXT ENGINE LUCENE METADATA {ignoreNullValues: true}
 
 
 CREATE CLASS Tweet EXTENDS V
@@ -17,17 +17,17 @@ CREATE PROPERTY Tweet.createdAt DATETIME
 CREATE PROPERTY Tweet.isRetweeted BOOLEAN
 CREATE PROPERTY Tweet.isRetweet BOOLEAN
 CREATE PROPERTY Tweet.geo EMBEDDED OPoint
-CREATE INDEX Tweet.tweetId ON Tweet(tweetId) UNIQUE
-CREATE INDEX Tweet.geo ON Tweet (geo) SPATIAL ENGINE LUCENE
-CREATE INDEX Tweet.text ON Tweet(text) FULLTEXT ENGINE LUCENE
+CREATE INDEX Tweet.tweetId ON Tweet(tweetId) UNIQUE_HASH_INDEX METADATA {ignoreNullValues: true}
+CREATE INDEX Tweet.geo ON Tweet (geo) SPATIAL ENGINE LUCENE METADATA {ignoreNullValues: true}
+CREATE INDEX Tweet.text ON Tweet(text) FULLTEXT ENGINE LUCENE METADATA {ignoreNullValues: true}
 
 CREATE CLASS Hashtag EXTENDS V
 CREATE PROPERTY Hashtag.label STRING
-CREATE INDEX Hashtag.label ON Hashtag(label) UNIQUE
+CREATE INDEX Hashtag.label ON Hashtag(label) UNIQUE_HASH_INDEX METADATA {ignoreNullValues: true}
 
 CREATE CLASS Source EXTENDS V
 CREATE PROPERTY Source.name STRING
-CREATE INDEX Source.name ON Source(name) UNIQUE
+CREATE INDEX Source.name ON Source(name) UNIQUE_HASH_INDEX METADATA {ignoreNullValues: true}
 
 CREATE CLASS Posts EXTENDS E
 

@@ -1,7 +1,6 @@
 package com.orientechnologies.twitter;
 
 import com.codahale.metrics.Meter;
-import com.google.common.collect.Lists;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
@@ -81,13 +80,17 @@ public class TweetPersister {
                     if (mentioned != null) {
                         graph.addEdge("class:Mentions", tweet, mentioned, null);
                     } else {
-                        OrientVertex user = graph.addVertex("class:User");
+                        OrientVertex user = graph.addVertex("class:User")
+                                .setProperties(new ArrayList<Object>() {{
+                                    add("userId");
+                                    add(ume.getId());
+                                    add("screenName");
+                                    add(ume.getScreenName());
 
-                        List<Object> props = new ArrayList<>(asList(
-                                "userId", ume.getId(),
-                                "screenName", ume.getScreenName()));
-                        user.setProperties(props.toArray());
+                                }}.toArray());
+
                         graph.addEdge("class:Mentions", tweet, user, null);
+
                     }
                 });
 
@@ -145,7 +148,6 @@ public class TweetPersister {
             graph.addEdge("class:Using", tweet, newSource, null);
 
         }
-
     }
 
     private String cleanUpHtml(String html) {
@@ -156,54 +158,61 @@ public class TweetPersister {
 
         OrientVertex orientVertex = graph.addVertex("class:Tweet");
 
-        List<Object> props = Lists.newArrayList(
-                "text", status.getText(),
-                "tweetId", Long.valueOf(status.getId()),
-                "createdAt", status.getCreatedAt(),
-                "lang", status.getLang(),
-                "isRetweet", Boolean.valueOf(status.isRetweet()),
-                "isRetweeted", Boolean.valueOf(status.isRetweeted()));
+        List<Object> props = new ArrayList<Object>() {{
+            add("text");
+            add(status.getText());
+            add("tweetId");
+            add(Long.valueOf(status.getId()));
+            add("createdAt");
+            add(status.getCreatedAt());
+            add("lang");
+            add(status.getLang());
+            add("isRetweet");
+            add(Boolean.valueOf(status.isRetweet()));
+            add("isRetweeted");
+            add(Boolean.valueOf(status.isRetweeted()));
+
+            Optional.ofNullable(status.getGeoLocation())
+                    .ifPresent(geo -> {
+                        add("geo");
+                        add(new ODocument("OPoint")
+                                .field("coordinates", asList(geo.getLongitude(), geo.getLatitude())));
+                    });
+        }};
 
 
-        Optional.ofNullable(status.getGeoLocation())
-                .ifPresent(geo -> {
-                    props.add("geo");
-                    props.add(new ODocument("OPoint")
-                            .field("coordinates", asList(geo.getLongitude(), geo.getLatitude())));
-                });
-
-        orientVertex.setProperties(props.toArray());
+        orientVertex.setProperties(props.toArray()).save();
 
         return orientVertex;
     }
 
     public Vertex storeUser(Status status, OrientBaseGraph graph) {
 
+        final User userData = status.getUser();
+
         OrientVertex user =
-                (OrientVertex) Optional.ofNullable(graph.getVertexByKey("User.userId", status.getUser().getId()))
+                (OrientVertex) Optional.ofNullable(graph.getVertexByKey("User.userId", userData.getId()))
                         .orElse(graph.addVertex("class:User"));
 
-        User userData = status.getUser();
 
-        List<Object> props = new ArrayList<>(asList(
-                "userId", userData.getId(),
-                "screenName", userData.getScreenName()));
+        List<Object> props = new ArrayList<Object>() {{
+            add("userId");
+            add(userData.getId());
+            add("screenName");
+            add(userData.getScreenName());
+            Optional.ofNullable(userData.getDescription())
+                    .ifPresent(desc -> {
+                        add("description");
+                        add(desc);
+                    });
+            Optional.ofNullable(userData.getLocation())
+                    .ifPresent(loc -> {
+                        add("location");
+                        add(loc);
+                    });
+        }};
 
-
-        Optional.ofNullable(userData.getDescription())
-                .ifPresent(desc -> {
-                    props.add("description");
-                    props.add(desc);
-                });
-
-
-        Optional.ofNullable(userData.getLocation())
-                .ifPresent(loc -> {
-                    props.add("location");
-                    props.add(loc);
-                });
-
-        user.setProperties(props.toArray());
+        user.setProperties(props.toArray()).save();
         return user;
     }
 

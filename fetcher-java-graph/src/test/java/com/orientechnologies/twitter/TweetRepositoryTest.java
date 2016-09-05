@@ -11,6 +11,7 @@ import twitter4j.TwitterObjectFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +42,7 @@ public class TweetRepositoryTest {
 
     @Test
     public void shouldMapStatusToDb() throws Exception {
-        String jsonStatus = new String(Files.readAllBytes(Paths.get("./src/test/resources", "status_1.json")));
+        String jsonStatus = new String(Files.readAllBytes(Paths.get("./src/test/resources", "status_2.json")));
 
         Status status = TwitterObjectFactory.createStatus(jsonStatus);
 
@@ -51,7 +52,13 @@ public class TweetRepositoryTest {
 
         assertThat(graph.countVertices("Tweet")).isEqualTo(1);
         assertThat(graph.countVertices("User")).isEqualTo(1);
+        assertThat(graph.countVertices("Hashtag")).isEqualTo(1);
+        assertThat(graph.countVertices("Source")).isEqualTo(1);
+
         assertThat(graph.countEdges("Posts")).isEqualTo(1);
+        assertThat(graph.countEdges("Source")).isEqualTo(1);
+        assertThat(graph.countEdges("Tags")).isEqualTo(1);
+        assertThat(graph.countEdges("Using")).isEqualTo(1);
 
         graph.shutdown();
 
@@ -69,10 +76,32 @@ public class TweetRepositoryTest {
 
         assertThat(graph.countVertices("Tweet")).isEqualTo(1);
 
+        //User mentioned isn't in the db, added bu storeMentions
+        assertThat(graph.countVertices("User")).isEqualTo(2);
+
         assertThat(graph.countEdges("Mentions")).isEqualTo(1);
+
+        graph.shutdown();
+
+    }
+
+    @Test
+    public void shouldAvoidDuplicates() throws Exception {
+        String jsonStatus = new String(Files.readAllBytes(Paths.get("./src/test/resources", "status_3.json")));
+
+        Status status = TwitterObjectFactory.createStatus(jsonStatus);
+
+        IntStream.range(0, 4)
+                .forEach(i -> repo.persists(status));
+
+        OrientGraphNoTx graph = graphFactory.getNoTx();
+
+        assertThat(graph.countVertices("Tweet")).isEqualTo(1);
 
         //User mentioned isn't in the db, added bu storeMentions
         assertThat(graph.countVertices("User")).isEqualTo(2);
+
+        assertThat(graph.countEdges("Mentions")).isEqualTo(1);
 
         graph.shutdown();
 

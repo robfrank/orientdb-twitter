@@ -22,7 +22,7 @@ public final class TweetObservable {
 
                     .onException(e -> subscriber.onError(e));
 
-            twitterStream.onRateLimitReached(rl -> log.info("rate exceded:: {} ", rl));
+            twitterStream.onRateLimitReached(rl -> log.info("rate exceeded:: {} ", rl));
 
             twitterStream.onRateLimitStatus(rs -> log.info("rate status:: {} ", rs));
 

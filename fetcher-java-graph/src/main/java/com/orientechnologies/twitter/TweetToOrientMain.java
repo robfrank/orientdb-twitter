@@ -26,12 +26,13 @@ public class TweetToOrientMain {
                 .build();
         reporter.start(1, TimeUnit.MINUTES);
 
-
         String dbUrl = System.getProperty("tw2odb.dbUrl", "plocal:./tweets");
         String keywords = System.getProperty("tw2odb.keywords", "");
         String languages = System.getProperty("tw2odb.langs", "");
 
-        TwitterDbUtils.createDbIfNeeded(dbUrl);
+        Boolean createDb = Boolean.parseBoolean(System.getProperty("tw2odb.create", "true"));
+
+        if (createDb) TwitterDbUtils.createDbIfNeeded(dbUrl);
 
         OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
                 .setupPool(1, 10);
@@ -41,7 +42,6 @@ public class TweetToOrientMain {
         TweetToOrientDB tweetToOrientDB = new TweetToOrientDB(repository, keywords, languages);
 
         tweetToOrientDB.start();
-
 
     }
 
