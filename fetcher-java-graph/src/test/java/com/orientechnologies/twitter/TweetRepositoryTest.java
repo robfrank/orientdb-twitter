@@ -1,6 +1,8 @@
 package com.orientechnologies.twitter;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import org.junit.After;
@@ -11,6 +13,7 @@ import twitter4j.TwitterObjectFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +42,16 @@ public class TweetRepositoryTest {
         db.drop();
     }
 
+
+    @Test
+    public void name() throws Exception {
+        ODatabaseDocumentTx db = new ODatabaseDocumentTx(graphFactory.getDatabase().getURL());
+        db.open("admin", "admin");
+
+        List<ODocument> query = db.query(new OSQLSynchQuery<>("select count(*) from OUser"));
+
+        System.out.println("" + query.get(0).field("count"));
+    }
 
     @Test
     public void shouldMapStatusToDb() throws Exception {

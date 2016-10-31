@@ -1,7 +1,7 @@
 package com.orientechnologies.twitter;
 
+import io.reactivex.Observable;
 import lombok.extern.log4j.Log4j2;
-import rx.Observable;
 import twitter4j.FilterQuery;
 import twitter4j.Status;
 import twitter4j.TwitterStream;
@@ -26,6 +26,7 @@ public final class TweetObservable {
 
             twitterStream.onRateLimitStatus(rs -> log.info("rate status:: {} ", rs));
 
+
             if (keywords.isEmpty()) {
                 log.info("no keywords provided, sample the stream");
                 twitterStream.sample();
@@ -33,8 +34,8 @@ public final class TweetObservable {
                 log.info("filter stream for languages:: {} - and keywords:: {} ", languages, keywords);
 
                 FilterQuery query = new FilterQuery()
-                        .language(languages.toArray(new String[] {}))
-                        .track(keywords.toArray(new String[] {}));
+                        .language(languages.toArray(new String[]{}))
+                        .track(keywords.toArray(new String[]{}));
 
                 twitterStream.filter(query);
             }

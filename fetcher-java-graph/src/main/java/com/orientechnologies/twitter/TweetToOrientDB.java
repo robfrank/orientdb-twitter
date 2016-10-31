@@ -2,9 +2,9 @@ package com.orientechnologies.twitter;
 
 import com.codahale.metrics.Meter;
 import com.google.common.base.Splitter;
+import io.reactivex.flowables.ConnectableFlowable;
+import io.reactivex.schedulers.Schedulers;
 import lombok.extern.log4j.Log4j2;
-import rx.observables.ConnectableObservable;
-import rx.schedulers.Schedulers;
 import twitter4j.Status;
 
 import java.util.List;
@@ -46,18 +46,32 @@ public class TweetToOrientDB {
 
         log.info("start fetching from twitter stream");
 
-        ConnectableObservable<Status> tweetsObservable = TweetObservable.tweetObservable(keywords, languages)
-                .onBackpressureDrop()
+
+        ConnectableFlowable<Status> tweetsFlowable = TweetFlowable.tweetFlowable(keywords, languages)
                 .retry()
                 .publish();
 
-        tweetsObservable.observeOn(Schedulers.computation()).forEach(status -> fetched.mark());
+        tweetsFlowable.observeOn(Schedulers.computation()).forEach(s -> fetched.mark());
 
-        tweetsObservable.observeOn(Schedulers.io()).forEach(status -> repository.persists(status));
+        tweetsFlowable.observeOn(Schedulers.io()).forEach(status -> repository.persists(status));
 
-        tweetsObservable.onBackpressureDrop(drop -> dropped.mark());
+        tweetsFlowable.onBackpressureDrop(drop -> dropped.mark());
 
-        tweetsObservable.connect();
+        tweetsFlowable.connect();
+
+
+//        ConnectableObservable<Status> tweetsObservable = TweetObservable.tweetObservable(keywords, languages)
+//                //TODO backpressure
+//                .retry()
+//                .publish();
+//
+//        tweetsObservable.observeOn(Schedulers.computation()).forEach(status -> fetched.mark());
+//
+//        tweetsObservable.observeOn(Schedulers.io()).forEach(status -> repository.persists(status));
+
+//        tweetsObservable.onBackpressureDrop(drop -> dropped.mark());
+
+//        tweetsObservable.connect();
 
     }
 

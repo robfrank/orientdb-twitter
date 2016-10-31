@@ -1,1 +1,68 @@
 SELECT * FROM Tweet WHERE  ST_WITHIN(geo,ST_Buffer(ST_GeomFromText('POINT(41.8919300 12.5113300)'), 1)) = true
+
+
+SELECT city, sum(salary) AS salary FROM Employee
+GROUP BY city
+HAVING salary > 1000
+
+SELECT out('Eats','Favorited') FROM Restaurant
+WHERE city = 'Rome'
+
+TRAVERSE out("Friend")
+FROM #10:1234 WHILE $depth <= 3
+STRATEGY BREADTH_FIRST
+
+
+LIVE SELECT FROM Order
+WHERE status = ‘approved’
+
+
+CREATE INDEX City.name ON City(name) FULLTEXT ENGINE LUCENE METADATA
+
+CREATE INDEX City.name ON City(name) FULLTEXT ENGINE LUCENE METADATA
+          {
+          "index": "org.apache.lucene.analysis.en.EnglishAnalyzer",
+          "query": "org.apache.lucene.analysis.standard.StandardAnalyzer"
+          }
+
+
+CREATE INDEX City.name_description ON City(name, description) FULLTEXT ENGINE LUCENE METADATA
+{
+    "default": "org.apache.lucene.analysis.standard.StandardAnalyzer",
+    "index": "org.apache.lucene.analysis.core.KeywordAnalyzer",
+    "query": "org.apache.lucene.analysis.standard.StandardAnalyzer",
+    "name_index": "org.apache.lucene.analysis.standard.StandardAnalyzer",
+    "name_query": "org.apache.lucene.analysis.core.KeywordAnalyzer",
+    "description_index": "org.apache.lucene.analysis.standard.StandardAnalyzer",
+    "description_index_stopwords": [
+        "the", "is"
+    ]
+}
+
+SELECT FROM CLass WHERE [name, description] LUCENE "(name:torino AND description:piemonte)"
+
+CREATE INDEX City.name ON City(name) FULLTEXT ENGINE LUCENE METADATA {
+    "allowLeadingWildcard": true
+    "lowercaseExpandedTerms": false,
+    "default" : "org.apache.lucene.analysis.core.KeywordAnalyzer"
+}
+
+SELECT from Person WHERE name LUCENE "NAME"
+
+SELECT from Person WHERE name LUCENE "name"
+
+
+CREATE class Restaurant
+CREATE PROPERTY Restaurant.name STRING
+CREATE PROPERTY Restaurant.location EMBEDDED OPoint
+
+INSERT INTO  Restaurant SET name = 'Dar Poeta', location = {"@class": "OPoint","coordinates" : [12.4684635,41.8914114]}
+
+INSERT INTO  Restaurant SET name = 'Dar Poeta', location = St_GeomFromText("POINT (12.4684635 41.8914114)")
+
+CREATE INDEX Restaurant.location ON Restaurant(location) SPATIAL ENGINE LUCENE
+
+SELECT ST_Intersects(ST_GeomFromText('POINT(0 0)'), ST_GeomFromText('LINESTRING ( 2 0, 0 2 )'));
+
+
+SELECT ST_Disjoint(ST_GeomFromText('POINT(0 0)'), ST_GeomFromText('LINESTRING ( 2 0, 0 2 )'));

@@ -109,7 +109,7 @@ public class TweetPersister {
         if (status.isRetweet()) {
             Vertex retweeted = graph.getVertexByKey("Tweet.tweetId", status.getRetweetedStatus().getId());
             if (retweeted != null) {
-                graph.addEdge("class:Retweets", retweeted, tweet, null);
+                graph.addEdge("class:Retweets", tweet, retweeted, null);
             }
         }
     }
