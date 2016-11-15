@@ -16,6 +16,7 @@
     <packaging>jar</packaging>
 
     <build>
+        <finalName>twitter-fetcher</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -31,6 +32,7 @@
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 
                     </transformers>
+
                 </configuration>
                 <executions>
                     <execution>
@@ -40,6 +42,24 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <configuration>
+                    <imageName>orientdb/${project.artifactId}</imageName>
+                    <maintainer>OrientDB</maintainer>
+                    <baseImage>azul/zulu-openjdk:8</baseImage>
+                    <cmd>["java", "-jar", "/${project.build.finalName}.jar"]</cmd>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
         </plugins>
     </build>

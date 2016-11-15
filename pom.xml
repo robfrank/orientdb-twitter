@@ -26,7 +26,7 @@
     </build>
 
     <properties>
-        <orient.version>2.2.8</orient.version>
+        <orient.version>2.2.12</orient.version>
     </properties>
     <repositories>
         <repository>
@@ -86,6 +86,8 @@
 
     <modules>
         <module>fetcher-java-graph</module>
+        <module>fetcher-kotlin-sql</module>
+
     </modules>
 
 </project>

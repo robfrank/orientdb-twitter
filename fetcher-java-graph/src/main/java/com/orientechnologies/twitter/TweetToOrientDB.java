@@ -58,21 +58,6 @@ public class TweetToOrientDB {
         tweetsFlowable.onBackpressureDrop(drop -> dropped.mark());
 
         tweetsFlowable.connect();
-
-
-//        ConnectableObservable<Status> tweetsObservable = TweetObservable.tweetObservable(keywords, languages)
-//                //TODO backpressure
-//                .retry()
-//                .publish();
-//
-//        tweetsObservable.observeOn(Schedulers.computation()).forEach(status -> fetched.mark());
-//
-//        tweetsObservable.observeOn(Schedulers.io()).forEach(status -> repository.persists(status));
-
-//        tweetsObservable.onBackpressureDrop(drop -> dropped.mark());
-
-//        tweetsObservable.connect();
-
     }
 
 

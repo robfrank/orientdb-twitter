@@ -2,9 +2,12 @@ package com.orientechnologies.twitter;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+import com.tinkerpop.blueprints.impls.orient.OrientDynaElementIterable;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
+import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +77,34 @@ public class TweetRepositoryTest {
         assertThat(graph.countEdges("Using")).isEqualTo(1);
 
         graph.shutdown();
+
+    }
+
+    @Test
+    public void shouldMapStatusToDbUpseert() throws Exception {
+        String jsonStatus = new String(Files.readAllBytes(Paths.get("./src/test/resources", "status_2.json")));
+
+        Status status = TwitterObjectFactory.createStatus(jsonStatus);
+
+
+        OrientGraphNoTx graph = graphFactory.getNoTx();
+        OrientDynaElementIterable res = graph.command(new OCommandSQL("UPDATE Tweet SET " +
+                "text = ? , " +
+                "tweetId = ? " +
+                "UPSERT RETURN AFTER @version WHERE tweetId = ? "))
+                .execute(status.getText(), status.getId(), status.getId());
+
+
+//        List<ODocument> res = graph.getRawGraph().command(new OCommandSQL("UPDATE Tweet SET " +
+//                "text = ? , " +
+//                "tweetId = ? " +
+//                "UPSERT RETURN AFTER $current WHERE tweetId = ? "))
+//                .execute(status.getText(), status.getId(), status.getId());
+
+        res.forEach(d -> System.out.println(((OrientVertex) d).<Integer>getProperty("value")));
+
+        graph.shutdown();
+        ;
 
     }
 

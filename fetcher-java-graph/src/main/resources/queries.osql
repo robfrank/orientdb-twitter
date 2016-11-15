@@ -66,3 +66,10 @@ SELECT ST_Intersects(ST_GeomFromText('POINT(0 0)'), ST_GeomFromText('LINESTRING 
 
 
 SELECT ST_Disjoint(ST_GeomFromText('POINT(0 0)'), ST_GeomFromText('LINESTRING ( 2 0, 0 2 )'));
+
+
+MATCH
+{class: Person, WHERE: (name = ‘Luigi’),
+ AS: me}-Friend->{}-Friend->{AS: foaf},
+{AS: me}-Friend->{AS: foaf}
+RETURN me.name AS myName,  foaf.name AS foafName
