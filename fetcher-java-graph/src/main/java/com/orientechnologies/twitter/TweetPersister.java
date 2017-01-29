@@ -64,6 +64,7 @@ public class TweetPersister {
 
             persisted.mark();
         } catch (Throwable e) {
+            graph.rollback();
             log.error("something bad happened while storing:: " + status.getId() + "-" + status.getUser().getId(), e);
         } finally {
             graph.commit();
@@ -77,6 +78,7 @@ public class TweetPersister {
         Arrays.stream(status.getUserMentionEntities())
                 .forEach(ume -> {
                     Vertex mentioned = graph.getVertexByKey("User.userId", ume.getId());
+
                     if (mentioned != null) {
                         graph.addEdge("class:Mentions", tweet, mentioned, null);
                     } else {

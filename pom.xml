@@ -26,7 +26,7 @@
     </build>
 
     <properties>
-        <orient.version>2.2.12</orient.version>
+        <orient.version>2.2.15</orient.version>
     </properties>
     <repositories>
         <repository>
@@ -72,16 +72,21 @@
             <artifactId>orientdb-graphdb</artifactId>
             <version>${orient.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-spatial</artifactId>
-            <version>${orient.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-lucene</artifactId>
-            <version>${orient.version}</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.orientechnologies</groupId>-->
+        <!--<artifactId>orientdb-spatial</artifactId>-->
+        <!--<version>${orient.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>com.orientechnologies</groupId>-->
+        <!--<artifactId>orientdb-lucene</artifactId>-->
+        <!--<version>${orient.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>com.orientechnologies</groupId>-->
+        <!--<artifactId>orientdb-lucene-cross-class</artifactId>-->
+        <!--<version>${orient.version}</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <modules>

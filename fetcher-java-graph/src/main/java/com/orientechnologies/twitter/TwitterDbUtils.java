@@ -20,11 +20,16 @@ public class TwitterDbUtils {
 
     public static void createDbIfNeeded(String dbUrl) throws IOException {
 
+
         if (dbUrl.startsWith("remote:")) {
             OServerAdmin serverAdmin = new OServerAdmin(dbUrl);
 
             log.info("connecting to server {} ", serverAdmin.getURL());
-            serverAdmin.connect("root", "ciao");
+
+            String dbServerUser = System.getProperty("tw2odb.dbServerUser", "root");
+            String dbServerPasswd = System.getProperty("tw2odb.dbServerPasswd", "root");
+
+            serverAdmin.connect(dbServerUser, dbServerPasswd);
 
             if (serverAdmin.existsDatabase("tweets", "plocal")) {
                 log.info("database exists, nothing to do here");

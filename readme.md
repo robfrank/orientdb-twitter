@@ -2,9 +2,11 @@
 
 This is a set of projects used while presenting OrientDB capabilities, such as relationship management through graph data modelling and fulltext search index.
 
+To run this application you need to provide Twitter's oauth tokens: https://dev.twitter.com/oauth/overview/application-owner-access-tokens
+
 ## Twitter fetcher 
 
-The fetcher module is in charge to fetch from the Twitter stream. 
+The fetcher module is in charge to fetch data from the Twitter stream. 
 
 **This project uses  [Lombok](https://projectlombok.org/). Setup your IDE .**
 
@@ -20,7 +22,6 @@ You can build a Docker container
 ```
 mvn docker:build
 ```
-
 # Launch with **plocal** (embedded) OrientDB
 
 Plain java
@@ -60,7 +61,6 @@ java -Dtwitter4j.oauth.consumerKey=YOUR_CONSUMER_KEY\
 After the first run, the database will be present, so switch off auto-creation setting **-Dtw2odb.createDb=false**  
 
 Docker
-
 
 
 ```

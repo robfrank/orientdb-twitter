@@ -46,7 +46,6 @@ public class TweetToOrientDB {
 
         log.info("start fetching from twitter stream");
 
-
         ConnectableFlowable<Status> tweetsFlowable = TweetFlowable.tweetFlowable(keywords, languages)
                 .retry()
                 .publish();

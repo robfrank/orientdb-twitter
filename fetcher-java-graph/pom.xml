@@ -103,21 +103,21 @@
             <version>2.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-graphdb</artifactId>
-            <version>${orient.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-spatial</artifactId>
-            <version>${orient.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-lucene</artifactId>
-            <version>${orient.version}</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.orientechnologies</groupId>-->
+        <!--<artifactId>orientdb-graphdb</artifactId>-->
+        <!--<version>${orient.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.orientechnologies</groupId>-->
+            <!--<artifactId>orientdb-spatial</artifactId>-->
+            <!--<version>${orient.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.orientechnologies</groupId>-->
+            <!--<artifactId>orientdb-lucene</artifactId>-->
+            <!--<version>${orient.version}</version>-->
+        <!--</dependency>-->
 
 
         <dependency>
