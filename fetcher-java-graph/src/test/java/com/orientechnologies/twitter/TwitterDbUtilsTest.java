@@ -1,6 +1,7 @@
 package com.orientechnologies.twitter;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Rule;
@@ -15,33 +16,30 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class TwitterDbUtilsTest {
 
-    @Rule
-    public TestName testName = new TestName();
+  @Rule
+  public TestName testName = new TestName();
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
 
+  @Test
+  public void shouldCreatePlocalDatabase() throws Exception {
+    System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
 
-    @Test
-    public void shouldCreatePlocalDatabase() throws Exception {
-        System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+    Configurator.setRootLevel(Level.INFO);
 
-        Configurator.setRootLevel(Level.INFO);
+    String dbUrl = "plocal:" + folder.getRoot().getAbsolutePath() + "/tweets";
 
+    TwitterDbUtils.createDbIfNeeded(dbUrl);
 
-        String dbUrl = "plocal:" + folder.getRoot().getAbsolutePath();
+    ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl).open("admin", "admin");
 
-        TwitterDbUtils.createDbIfNeeded(dbUrl);
+    OSchema schema = db.getMetadata().getSchema();
+    assertThat(schema.getClass("Tweet")).isNotNull();
+    assertThat(schema.getClass("User")).isNotNull();
+    assertThat(db.getMetadata().getIndexManager().getIndex("User.userId")).isNotNull();
 
-        ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl).open("admin", "admin");
+    db.drop();
 
-        assertThat(db.exists()).isTrue();
-
-        assertThat(db.getMetadata().getSchema().getClass("Tweet")).isNotNull();
-
-
-        db.drop();
-
-
-    }
+  }
 }

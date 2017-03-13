@@ -21,7 +21,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.1</version>
+                <version>2.4.3</version>
                 <configuration>
                     <transformers>
                         <transformer
@@ -30,9 +30,17 @@
                         </transformer>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-
                     </transformers>
-
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
                 <executions>
                     <execution>
@@ -48,10 +56,12 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.13</version>
                 <configuration>
-                    <imageName>orientdb/${project.artifactId}</imageName>
-                    <maintainer>OrientDB</maintainer>
-                    <baseImage>azul/zulu-openjdk:8</baseImage>
-                    <cmd>["java", "-jar", "/${project.build.finalName}.jar"]</cmd>
+                    <imageName>${user.name}/${project.artifactId}</imageName>
+                    <imageTags>
+                        <imageTag>${project.version}</imageTag>
+                    </imageTags>
+                    <dockerDirectory>docker</dockerDirectory>
+                    <!-- copy the service's jar file from target into the root directory of the image -->
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
@@ -84,6 +94,11 @@
             <artifactId>metrics-core</artifactId>
             <version>3.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-graphite</artifactId>
+            <version>3.1.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -103,27 +118,27 @@
             <version>2.5</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>com.orientechnologies</groupId>-->
-            <!--<artifactId>orientdb-spatial</artifactId>-->
-            <!--<version>${orient.version}</version>-->
+        <!--<groupId>com.orientechnologies</groupId>-->
+        <!--<artifactId>orientdb-spatial</artifactId>-->
+        <!--<version>${orient.version}</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>com.orientechnologies</groupId>-->
-            <!--<artifactId>orientdb-lucene</artifactId>-->
-            <!--<version>${orient.version}</version>-->
+        <!--<groupId>com.orientechnologies</groupId>-->
+        <!--<artifactId>orientdb-lucene</artifactId>-->
+        <!--<version>${orient.version}</version>-->
         <!--</dependency>-->
 
 
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-stream</artifactId>
-            <version>4.0.5</version>
+            <version>4.0.6</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <version>21.0</version>
         </dependency>
 
         <dependency>

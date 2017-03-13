@@ -18,50 +18,48 @@ import static com.orientechnologies.twitter.TweetMetrics.METRICS;
 @Log4j2
 public class TweetToOrientDB {
 
-    private final TweetPersister repository;
-    private final List<String> keywords;
-    private final List<String> languages;
-    private final Meter fetched;
-    private final Meter dropped;
+  private final TweetPersister repository;
+  private final List<String>   keywords;
+  private final List<String>   languages;
+  private final Meter          fetched;
+  private final Meter          dropped;
 
-    public TweetToOrientDB(TweetPersister repository, String keywords, String languages) {
-        this.repository = repository;
+  public TweetToOrientDB(TweetPersister repository, String keywords, String languages) {
+    this.repository = repository;
 
-        this.keywords = Splitter.on(',')
-                .omitEmptyStrings()
-                .trimResults()
-                .splitToList(keywords);
+    this.keywords = Splitter.on(',')
+        .omitEmptyStrings()
+        .trimResults()
+        .splitToList(keywords);
 
-        this.languages = Splitter.on(',')
-                .omitEmptyStrings()
-                .trimResults()
-                .splitToList(languages);
+    this.languages = Splitter.on(',')
+        .omitEmptyStrings()
+        .trimResults()
+        .splitToList(languages);
 
-        fetched = METRICS.meter(name(getClass(), "fetched"));
-        dropped = METRICS.meter(name(getClass(), "dropped"));
-    }
+    fetched = METRICS.meter(name("fetcher", "documents", "fetched"));
+    dropped = METRICS.meter(name("fetcher", "documents", "dropped"));
+  }
 
+  public void start() {
 
-    public void start() {
+    log.info("start fetching from twitter stream");
 
-        log.info("start fetching from twitter stream");
+    ConnectableFlowable<Status> tweetsFlowable = TweetFlowable.tweetFlowable(keywords, languages)
+        .retry()
+        .publish();
 
-        ConnectableFlowable<Status> tweetsFlowable = TweetFlowable.tweetFlowable(keywords, languages)
-                .retry()
-                .publish();
+    tweetsFlowable.observeOn(Schedulers.computation()).forEach(s -> fetched.mark());
 
-        tweetsFlowable.observeOn(Schedulers.computation()).forEach(s -> fetched.mark());
+    tweetsFlowable.observeOn(Schedulers.io()).forEach(status -> repository.persists(status));
 
-        tweetsFlowable.observeOn(Schedulers.io()).forEach(status -> repository.persists(status));
+    tweetsFlowable.onBackpressureDrop(drop -> dropped.mark());
 
-        tweetsFlowable.onBackpressureDrop(drop -> dropped.mark());
+    tweetsFlowable.connect();
+  }
 
-        tweetsFlowable.connect();
-    }
+  public void stop() {
 
-
-    public void stop() {
-
-    }
+  }
 
 }
