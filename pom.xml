@@ -26,7 +26,7 @@
     </build>
 
     <properties>
-        <orient.version>2.2.15</orient.version>
+        <orient.version>2.2.17</orient.version>
     </properties>
     <repositories>
         <repository>
@@ -67,6 +67,11 @@
     <dependencies>
 
 
+        <dependency>
+            <groupId>com.orientechnologies</groupId>
+            <artifactId>orientdb-core</artifactId>
+            <version>${orient.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.orientechnologies</groupId>
             <artifactId>orientdb-graphdb</artifactId>
