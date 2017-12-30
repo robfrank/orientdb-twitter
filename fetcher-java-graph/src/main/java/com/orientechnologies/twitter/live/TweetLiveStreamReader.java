@@ -28,7 +28,7 @@ public class TweetLiveStreamReader {
 
   public TweetLiveStreamReader() {
     dbUrl = System.getProperty("tw2odb.dbUrl", "remote:localhost/tweets");
-    queries = System.getProperty("tw2odb.queries", "SELECT FROM tweet WHERE text LUCENE 'cloud' ");
+    queries = System.getProperty("tw2odb.queries", "SELECT FROM Tweet WHERE text LUCENE 'cloud' ");
 
   }
 

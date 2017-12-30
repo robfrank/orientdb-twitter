@@ -35,7 +35,7 @@ java -Dtwitter4j.oauth.consumerKey=YOUR_CONSUMER_KEY\
     -Dtw2odb.langs=en,it \
     -Dtw2odb.dbUrl=plocal:./tweets \
     -Dtw2odb.createDb=true \
-    -jar target/twitter-fetcher-java-graph-1.0-SNAPSHOT.jar
+    -jar target/twitter-fetcher.jar
 ```
 
 
@@ -55,7 +55,7 @@ java -Dtwitter4j.oauth.consumerKey=YOUR_CONSUMER_KEY\
     -Dtw2odb.createDb=true \
     -Dtw2odb.serverUsername=MY_SERVER_USERNAME \
     -Dtw2odb.serverPassword=MY_SERVER_PASSWORD \
-    -jar target/twitter-fetcher-java-graph-1.0-SNAPSHOT.jar
+    -jar target/twitter-fetcher.jar
 ```
 
 After the first run, the database will be present, so switch off auto-creation setting **-Dtw2odb.createDb=false**  
@@ -78,7 +78,7 @@ docker run --name odb-fetcher -d --link orientdb:orientdb \
     -Dtw2odb.createDb=true \
     -Dtw2odb.serverUsername=MY_SERVER_USERNAME \
     -Dtw2odb.serverPassword=MY_SERVER_PASSWORD \
-    -jar orientdb-twitter-fetcher-java-graph-1.0-SNAPSHOT.jar 
+    -jar orientdb-twitter-fetcher.jar
 
 ```
 

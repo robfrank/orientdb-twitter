@@ -26,7 +26,7 @@
     </build>
 
     <properties>
-        <orient.version>2.2.17</orient.version>
+        <orient.version>2.2.31</orient.version>
     </properties>
     <repositories>
         <repository>
@@ -53,13 +53,13 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.5.2</version>
+                <version>3.8.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.10</version>
+                <version>1.16.18</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -91,7 +91,7 @@
 
     <modules>
         <module>fetcher-java-graph</module>
-        <module>fetcher-kotlin-sql</module>
+        <!--<module>fetcher-kotlin-sql</module>-->
 
     </modules>
 

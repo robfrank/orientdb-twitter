@@ -65,12 +65,12 @@ public class TweetPersister {
 
       storeMentions(status, tweet, graph);
 
+      graph.commit();
       persisted.mark();
     } catch (Throwable e) {
       graph.rollback();
       log.error("something bad happened while storing:: " + status.getId() + "-" + status.getUser().getId(), e);
     } finally {
-      graph.commit();
       graph.shutdown();
     }
 
@@ -161,7 +161,9 @@ public class TweetPersister {
 
   public Vertex storeTweet(Status status, OrientBaseGraph graph) {
 
-    OrientVertex orientVertex = graph.addVertex("class:Tweet");
+    OrientVertex orientVertex =
+        (OrientVertex) Optional.ofNullable(graph.getVertexByKey("Tweet.tweetId", status.getId()))
+            .orElse(graph.addVertex("class:Tweet"));
 
     List<Object> props = new ArrayList<Object>() {{
       add("text");
