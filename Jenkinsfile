@@ -28,7 +28,7 @@ node {
         }
 
         stage('build') {
-            sh "./mvnw docker:build"
+            sh "./mvnw -f ./fetcher-java-graph/pom.xml docker:build"
         }
 
         slackSend(color: '#00FF00', message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
