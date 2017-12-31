@@ -18,81 +18,81 @@ import java.util.stream.Collectors;
 @Log4j2
 public class TwitterDbUtils {
 
-  public static void createDbIfNeeded(String dbUrl) throws IOException {
+    public static void createDbIfNeeded(String dbUrl) throws IOException {
 
-    if (dbUrl.startsWith("remote:")) {
-      OServerAdmin serverAdmin = new OServerAdmin(dbUrl);
+        if (dbUrl.startsWith("remote:")) {
+            OServerAdmin serverAdmin = new OServerAdmin(dbUrl);
 
-      log.info("connecting to server {} ", serverAdmin.getURL());
+            log.info("connecting to server {} ", serverAdmin.getURL());
 
-      String dbServerUser = System.getProperty("tw2odb.dbServerUser", "root");
-      String dbServerPasswd = System.getProperty("tw2odb.dbServerPasswd", "root");
+            final String dbServerUser = System.getProperty("tw2odb.dbServerUser", "root");
+            final String dbServerPasswd = System.getProperty("tw2odb.dbServerPasswd", "root");
 
-      serverAdmin.connect(dbServerUser, dbServerPasswd);
+            serverAdmin.connect(dbServerUser, dbServerPasswd);
 
-      if (serverAdmin.existsDatabase("tweets", "plocal")) {
-        log.info("database exists, nothing to do here");
-      } else {
+            if (serverAdmin.existsDatabase("tweets", "plocal")) {
+                log.info("database exists, nothing to do here");
+            } else {
 
-        log.info("create database tweets");
-        serverAdmin.createDatabase("tweets", "graph", "plocal");
+                log.info("create database tweets");
+                serverAdmin.createDatabase("tweets", "graph", "plocal");
 
-        OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
-            .setupPool(1, 10);
+                OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
+                        .setupPool(1, 10);
 
-        createDb(factory);
+                createDb(factory);
 
-        factory.close();
+                factory.close();
 
-        log.info("db created on server:: {}", dbUrl);
-      }
-    } else {
+                log.info("db created on server:: {}", dbUrl);
+            }
+        } else {
 
-      log.info("creating db:: " + dbUrl);
+            log.info("creating db:: " + dbUrl);
 
-      OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
-          .setupPool(1, 10);
+            OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
+                    .setupPool(1, 10);
 
-      createDb(factory);
+            createDb(factory);
 
-      factory.close();
+            factory.close();
 
-      log.info("db created:: {}", dbUrl);
+            log.info("db created:: {}", dbUrl);
+
+        }
 
     }
 
-  }
+    public static void createDb(OrientGraphFactory factory) {
 
-  public static void createDb(OrientGraphFactory factory) {
+        OrientGraphNoTx graph = factory.getNoTx();
 
-    OrientGraphNoTx graph = factory.getNoTx();
+        fromSQLFile(graph);
 
-    fromSQLFile(graph);
+        graph.getRawGraph().getMetadata().getSchema().reload();
 
-    graph.getRawGraph().getMetadata().getSchema().reload();
+        graph.shutdown();
 
-    graph.shutdown();
-
-  }
-
-  private static void fromSQLFile(OrientGraphNoTx graph) {
-
-    log.info("loading SQL schema from script");
-    InputStream stream = ClassLoader.getSystemResourceAsStream("tweets.osql");
-
-    try {
-      graph.command(new OCommandScript("sql", read(stream))).execute();
-      log.info("schema loaded");
-    } catch (IOException e) {
-      log.error("unable to create database schema", e);
     }
 
-  }
+    private static void fromSQLFile(OrientGraphNoTx graph) {
 
-  public static String read(InputStream input) throws IOException {
-    try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
-      return buffer.lines().collect(Collectors.joining("\n"));
+        log.info("loading SQL schema from script");
+        InputStream stream = ClassLoader.getSystemResourceAsStream("tweets.osql");
+
+        try {
+            graph.command(new OCommandScript("sql", read(stream))).execute();
+            log.info("schema loaded");
+        } catch (IOException e) {
+            log.error("unable to create database schema", e);
+        }
+
     }
-  }
+
+    public static String read(InputStream input) throws IOException {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+            return buffer.lines().collect(Collectors.joining("\n"));
+        }
+    }
 
 }

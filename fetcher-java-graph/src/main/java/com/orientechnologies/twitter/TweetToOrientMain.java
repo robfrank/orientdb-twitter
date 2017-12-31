@@ -13,40 +13,40 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class TweetToOrientMain {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
-    System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+    public static void main(String[] args) throws IOException, InterruptedException {
+        System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
 
-    waitForOthers();
+        waitForOthers();
 
-    log.info("starting twitter fetcher");
-    TweetMetrics.configureMetrics();
+        log.info("starting twitter fetcher");
+        TweetMetrics.configureMetrics();
 
-    String dbUrl = System.getProperty("tw2odb.dbUrl", "plocal:./tweets");
-    String keywords = System.getProperty("tw2odb.keywords", "");
-    String languages = System.getProperty("tw2odb.langs", "");
+        final String dbUrl = System.getProperty("tw2odb.dbUrl", "plocal:./tweets");
+        final String keywords = System.getProperty("tw2odb.keywords", "");
+        final String languages = System.getProperty("tw2odb.langs", "");
 
-    Boolean createDb = Boolean.parseBoolean(System.getProperty("tw2odb.create", "true"));
+        final Boolean createDb = Boolean.parseBoolean(System.getProperty("tw2odb.createDb", "true"));
 
-    if (createDb)
-      TwitterDbUtils.createDbIfNeeded(dbUrl);
+        if (createDb)
+            TwitterDbUtils.createDbIfNeeded(dbUrl);
 
-    OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
-        .setupPool(1, 10);
+        final OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
+                .setupPool(1, 10);
 
-    TweetPersister repository = new TweetPersister(factory);
+        final TweetPersister repository = new TweetPersister(factory);
 
-    TweetToOrientDB tweetToOrientDB = new TweetToOrientDB(repository, keywords, languages);
+        final TweetToOrientDB tweetToOrientDB = new TweetToOrientDB(repository, keywords, languages);
 
-    tweetToOrientDB.start();
+        tweetToOrientDB.start();
 
-  }
+    }
 
-  public static void waitForOthers() throws InterruptedException {
-    int timeout = Integer.valueOf(System.getProperty("tw2odb.startUpTimeout", "5"));
+    public static void waitForOthers() throws InterruptedException {
+        int timeout = Integer.valueOf(System.getProperty("tw2odb.startUpTimeout", "5"));
 
-    log.info("waiting other services for {} seconds ", timeout);
+        log.info("waiting other services for {} seconds ", timeout);
 
-    TimeUnit.SECONDS.sleep(timeout);
-  }
+        TimeUnit.SECONDS.sleep(timeout);
+    }
 
 }

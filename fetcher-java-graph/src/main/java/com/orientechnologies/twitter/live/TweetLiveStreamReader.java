@@ -22,74 +22,74 @@ import static java.util.stream.Collectors.toList;
 @Log4j2
 public class TweetLiveStreamReader {
 
-  private final String        dbUrl;
-  private final String        queries;
-  private       List<Integer> tokens;
+    private final String dbUrl;
+    private final String queries;
+    private List<Integer> tokens;
 
-  public TweetLiveStreamReader() {
-    dbUrl = System.getProperty("tw2odb.dbUrl", "remote:localhost/tweets");
-    queries = System.getProperty("tw2odb.queries", "SELECT FROM Tweet WHERE text LUCENE 'cloud' ");
+    public TweetLiveStreamReader() {
+        dbUrl = System.getProperty("tw2odb.dbUrl", "remote:localhost/tweets");
+        queries = System.getProperty("tw2odb.queries", "SELECT FROM Tweet WHERE text LUCENE 'cloud' ");
 
-  }
-
-  public void start() {
-    log.info("connect to: " + dbUrl);
-    final ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl)
-        .open("admin", "admin");
-
-    final OLiveResultListener listener = new MyOLiveResultListener(db.copy());
-
-    tokens = Arrays.stream(queries.split(","))
-        .peek(q -> log.info("registering live query:: {} ", q))
-        .map(q -> "LIVE " + q)
-        .map(q -> db.<List<ODocument>>query(new OLiveQuery<ODocument>(q, listener)).get(0))
-        .map(d -> d.<Integer>field("token"))
-        .peek(t -> log.info("registered token:: {}", t))
-        .collect(toList());
-
-  }
-
-  public void stop() {
-    final ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl)
-        .open("admin", "admin");
-
-    log.info("unsubscribe live queries");
-    db.activateOnCurrentThread();
-    tokens.stream()
-        .peek(t -> log.info("unregistering token:: {}", t))
-        .forEach(token -> db.command(new OCommandSQL("LIVE UNSUBSCRIBE " + token)).execute());
-
-    db.close();
-  }
-
-  private static class MyOLiveResultListener implements OLiveResultListener {
-
-    private final ODatabaseDocumentTx db;
-    Meter fetched = METRICS.meter(name("live", "documents", "fetched"));
-
-    public MyOLiveResultListener(ODatabaseDocumentTx db) {
-
-      this.db = db;
     }
 
-    public void onLiveResult(int token, ORecordOperation operation) {
-      fetched.mark();
+    public void start() {
+        log.info("connect to: " + dbUrl);
+        final ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl)
+                .open("admin", "admin");
 
-      db.activateOnCurrentThread();
+        final OLiveResultListener listener = new MyOLiveResultListener(db.copy());
 
-      log.info("  token:: {} - content:: {} ", token, operation.record);
+        tokens = Arrays.stream(queries.split(","))
+                .peek(q -> log.info("registering live query:: {} ", q))
+                .map(q -> "LIVE " + q)
+                .map(q -> db.<List<ODocument>>query(new OLiveQuery<ODocument>(q, listener)).get(0))
+                .map(d -> d.<Integer>field("token"))
+                .peek(t -> log.info("registered token:: {}", t))
+                .collect(toList());
+
     }
 
-    @Override
-    public void onError(int token) {
-      log.error("ERROR token = " + token);
+    public void stop() {
+        final ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl)
+                .open("admin", "admin");
+
+        log.info("unsubscribe live queries");
+        db.activateOnCurrentThread();
+        tokens.stream()
+                .peek(t -> log.info("unregistering token:: {}", t))
+                .forEach(token -> db.command(new OCommandSQL("LIVE UNSUBSCRIBE " + token)).execute());
+
+        db.close();
     }
 
-    @Override
-    public void onUnsubscribe(int token) {
-      log.info("UNSUBSCRIBE iLiveToken = " + token);
-    }
+    private static class MyOLiveResultListener implements OLiveResultListener {
 
-  }
+        private final ODatabaseDocumentTx db;
+        Meter fetched = METRICS.meter(name("live", "documents", "fetched"));
+
+        public MyOLiveResultListener(ODatabaseDocumentTx db) {
+
+            this.db = db;
+        }
+
+        public void onLiveResult(int token, ORecordOperation operation) {
+            fetched.mark();
+
+            db.activateOnCurrentThread();
+
+            log.info("  token:: {} - content:: {} ", token, operation.record);
+        }
+
+        @Override
+        public void onError(int token) {
+            log.error("ERROR token = " + token);
+        }
+
+        @Override
+        public void onUnsubscribe(int token) {
+            log.info("UNSUBSCRIBE iLiveToken = " + token);
+        }
+
+    }
 
 }

@@ -12,37 +12,37 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TweetLiveStreamMain {
 
-  public static void main(String[] args) throws Exception {
-    System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+    public static void main(String[] args) throws Exception {
+        System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
 
-    TweetMetrics.configureMetrics();
+        TweetMetrics.configureMetrics();
 
-    TweetToOrientMain.waitForOthers();
+        TweetToOrientMain.waitForOthers();
 
-    TweetLiveStreamReader liveStreamReader = new TweetLiveStreamReader();
+        TweetLiveStreamReader liveStreamReader = new TweetLiveStreamReader();
 
-    liveStreamReader.start();
+        liveStreamReader.start();
 
 //    Orient.instance().removeShutdownHook();
 
 //    Runtime.getRuntime().addShutdownHook(new Thread(() -> liveStreamReader.stop()));
 
-    Orient.instance().addShutdownHandler(new OShutdownHandler() {
-      @Override
-      public int getPriority() {
-        return Integer.MAX_VALUE;
-      }
+        Orient.instance().addShutdownHandler(new OShutdownHandler() {
+            @Override
+            public int getPriority() {
+                return Integer.MAX_VALUE;
+            }
 
-      @Override
-      public void shutdown() throws Exception {
+            @Override
+            public void shutdown() throws Exception {
 
-        liveStreamReader.stop();
-      }
-    });
+                liveStreamReader.stop();
+            }
+        });
 
-    Thread.currentThread().join();
+        Thread.currentThread().join();
 
 //    liveStreamReader.stop();
-  }
+    }
 
 }
