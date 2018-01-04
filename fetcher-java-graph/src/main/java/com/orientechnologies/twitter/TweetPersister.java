@@ -196,6 +196,10 @@ public class TweetPersister {
 
         final User userData = status.getUser();
 
+        return storeUser(graph, userData);
+    }
+
+    public Vertex storeUser(OrientBaseGraph graph, User userData) {
         OrientVertex user =
                 (OrientVertex) Optional.ofNullable(graph.getVertexByKey("User.userId", userData.getId()))
                         .orElse(graph.addVertex("class:User"));
