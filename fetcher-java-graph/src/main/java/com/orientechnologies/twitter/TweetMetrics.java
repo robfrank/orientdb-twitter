@@ -32,14 +32,14 @@ public class TweetMetrics {
         boolean graphitEnabled = Boolean.valueOf(System.getProperty("tw2odb.graphite", "false"));
 
         if (graphitEnabled) {
-            String graphiteHost = System.getProperty("tw2odb.graphiteHost", "graphite");
-            int graphitePort = Integer.valueOf(System.getProperty("tw2odb.graphitePort", "2003"));
-
-            enableGraphiteReporter(graphiteHost, graphitePort);
+            enableGraphiteReporter();
         }
     }
 
-    static void enableGraphiteReporter(String graphiteHost, int graphitePort) {
+    static void enableGraphiteReporter() {
+        String graphiteHost = System.getProperty("tw2odb.graphiteHost", "graphite");
+        int graphitePort = Integer.valueOf(System.getProperty("tw2odb.graphitePort", "2003"));
+
         log.info("enabling graphite reporter:: {}:{}", graphiteHost, graphitePort);
         final Graphite graphite = new Graphite(new InetSocketAddress(graphiteHost, graphitePort));
         final GraphiteReporter reporter = GraphiteReporter.forRegistry(TweetMetrics.METRICS)

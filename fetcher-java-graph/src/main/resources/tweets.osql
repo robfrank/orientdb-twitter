@@ -4,6 +4,7 @@ CREATE PROPERTY User.description STRING;
 CREATE PROPERTY User.screenName STRING;
 CREATE PROPERTY User.lang STRING;
 CREATE PROPERTY User.location STRING;
+CREATE PROPERTY User.fetched BOOLEAN;
 
 CREATE INDEX User.userId ON User(userId) UNIQUE_HASH_INDEX METADATA {ignoreNullValues: true};
 CREATE INDEX User.description ON User(description) FULLTEXT ENGINE LUCENE METADATA {ignoreNullValues: true};

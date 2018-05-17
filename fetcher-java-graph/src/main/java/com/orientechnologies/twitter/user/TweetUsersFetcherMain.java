@@ -1,10 +1,6 @@
 package com.orientechnologies.twitter.user;
 
-import com.orientechnologies.orient.core.Orient;
-import com.orientechnologies.orient.core.shutdown.OShutdownHandler;
 import com.orientechnologies.twitter.TweetMetrics;
-import com.orientechnologies.twitter.TweetToOrientMain;
-import com.orientechnologies.twitter.live.TweetLiveStreamReader;
 import lombok.extern.log4j.Log4j2;
 
 /**

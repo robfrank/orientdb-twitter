@@ -2,7 +2,6 @@ package com.orientechnologies.twitter.user;
 
 import com.orientechnologies.orient.core.command.OCommandResultListener;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLAsynchQuery;
 import com.orientechnologies.twitter.TweetPersister;
 import com.tinkerpop.blueprints.Vertex;
@@ -41,7 +40,7 @@ public class TweetUsersToOrientDB {
 
         ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl).open("admin", "admin");
 
-        db.query(new OSQLAsynchQuery<>("SELECT FROM User", listener));
+        db.query(new OSQLAsynchQuery<>("SELECT FROM User where fetched = false", listener));
 
     }
 
@@ -67,46 +66,51 @@ public class TweetUsersToOrientDB {
         public boolean result(Object iRecord) {
 
             OrientBaseGraph graph = factory.getTx();
-            final OrientVertex user = graph.getVertex(((ODocument) iRecord));
-
-            log.info("getting followers and friends for user {} ", user);
-
-            if (user == null) return false;
-
-            Long userId = user.getProperty("userId");
 
             try {
-                PagableResponseList<User> users = followersResources.getFollowersList(userId, -1);
-                for (User follower : users) {
-                    log.info("follower: " + follower.getScreenName());
-                    Vertex vertex = persister.storeUser(graph, follower);
-                    vertex.addEdge("Follows", user);
-                    graph.commit();
+                final OrientVertex user = graph.getVertex(iRecord);
+                user.setProperty("fetched", true);
+                user.save();
 
+                log.info("getting followers and friends for user {} ", user);
+
+                if (user == null) return false;
+
+                Long userId = user.getProperty("userId");
+
+                try {
+                    PagableResponseList<User> users = followersResources.getFollowersList(userId, -1);
+                    for (User follower : users) {
+                        log.info("follower: " + follower.getScreenName());
+                        Vertex vertex = persister.storeUser(graph, follower);
+                        vertex.addEdge("Follows", user);
+                        graph.commit();
+
+                    }
+                } catch (TwitterException e) {
+                    handleRetryAfter(e);
                 }
-            } catch (TwitterException e) {
-                handleRetryAfter(e);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            try {
-                PagableResponseList<User> users = followersResources.getFriendsList(userId, -1);
-                for (User friend : users) {
-                    log.info("friend: " + friend.getScreenName());
-                    Vertex vertex = persister.storeUser(graph, friend);
-                    user.addEdge("Follows", vertex);
-                    graph.commit();
+                try {
+                    PagableResponseList<User> users = followersResources.getFriendsList(userId, -1);
+                    for (User friend : users) {
+                        log.info("friend: " + friend.getScreenName());
+                        Vertex vertex = persister.storeUser(graph, friend);
+                        user.addEdge("Follows", vertex);
+                        graph.commit();
 
+                    }
+                } catch (TwitterException e) {
+                    handleRetryAfter(e);
                 }
-            } catch (TwitterException e) {
-                handleRetryAfter(e);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            graph.shutdown();
-            log.info("done for user {} ", userId);
+                log.info("done for user {} ", userId);
+            } catch (Exception e) {
+                log.error("something went wrong ", e);
+            } finally {
+
+                graph.shutdown();
+            }
 
 
             return true;
@@ -115,7 +119,6 @@ public class TweetUsersToOrientDB {
         public void handleRetryAfter(TwitterException e) {
             if (e.getStatusCode() == 500 || e.exceededRateLimitation()) {
                 RateLimitStatus limitStatus = e.getRateLimitStatus();
-
 
                 log.warn("rate limit execed, wait for {} seconds", limitStatus.getSecondsUntilReset());
                 try {

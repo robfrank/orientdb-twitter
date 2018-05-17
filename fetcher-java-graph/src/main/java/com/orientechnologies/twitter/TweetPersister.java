@@ -209,6 +209,8 @@ public class TweetPersister {
             add(userData.getId());
             add("screenName");
             add(userData.getScreenName());
+            add("fetched");
+            add(false);
             Optional.ofNullable(userData.getDescription())
                     .ifPresent(desc -> {
                         add("description");
