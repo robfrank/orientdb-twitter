@@ -48,6 +48,7 @@ public class TweetUsersToOrientDB {
             } catch (Exception e) {
                 log.error("error while retrieving");
             } finally {
+                db.activateOnCurrentThread();
                 db.close();
             }
         }
