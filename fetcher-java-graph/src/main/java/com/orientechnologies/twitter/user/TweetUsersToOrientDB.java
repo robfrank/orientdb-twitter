@@ -9,7 +9,9 @@ import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 import lombok.extern.log4j.Log4j2;
-import twitter4j.*;
+import twitter4j.RateLimitStatus;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 import twitter4j.api.FriendsFollowersResources;
 
 import java.util.concurrent.TimeUnit;
@@ -38,9 +40,17 @@ public class TweetUsersToOrientDB {
         OCommandResultListener listener = new UserResultListener(repository, factory);
 
 
-        ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl).open("admin", "admin");
+        while (true) {
+            ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl).open("admin", "admin");
 
-        db.query(new OSQLAsynchQuery<>("SELECT FROM User where fetched = false", listener));
+            try {
+                db.query(new OSQLAsynchQuery<>("SELECT FROM User where fetched = false LIMIT 5", listener));
+            } catch (Exception e) {
+                log.error("error while retrieving");
+            } finally {
+                db.close();
+            }
+        }
 
     }
 
@@ -79,30 +89,26 @@ public class TweetUsersToOrientDB {
                 Long userId = user.getProperty("userId");
 
                 try {
-                    PagableResponseList<User> users = followersResources.getFollowersList(userId, -1);
-                    for (User follower : users) {
-                        log.info("follower: " + follower.getScreenName());
-                        Vertex vertex = persister.storeUser(graph, follower);
-                        vertex.addEdge("Follows", user);
-                        graph.commit();
-
-                    }
+                    followersResources.getFollowersList(userId, -1).stream()
+                            .forEach(follower -> {
+                                        log.info("follower: " + follower.getScreenName());
+                                        Vertex vertex = persister.storeUser(graph, follower);
+                                        vertex.addEdge("Follows", user);
+                                        graph.commit();
+                                    }
+                            );
+                    followersResources.getFriendsList(userId, -1).stream()
+                            .forEach(follower -> {
+                                        log.info("friend: " + follower.getScreenName());
+                                        Vertex vertex = persister.storeUser(graph, follower);
+                                        vertex.addEdge("Follows", user);
+                                        graph.commit();
+                                    }
+                            );
                 } catch (TwitterException e) {
                     handleRetryAfter(e);
                 }
 
-                try {
-                    PagableResponseList<User> users = followersResources.getFriendsList(userId, -1);
-                    for (User friend : users) {
-                        log.info("friend: " + friend.getScreenName());
-                        Vertex vertex = persister.storeUser(graph, friend);
-                        user.addEdge("Follows", vertex);
-                        graph.commit();
-
-                    }
-                } catch (TwitterException e) {
-                    handleRetryAfter(e);
-                }
 
                 log.info("done for user {} ", userId);
             } catch (Exception e) {
