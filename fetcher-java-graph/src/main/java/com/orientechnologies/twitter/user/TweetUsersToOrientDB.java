@@ -2,7 +2,9 @@ package com.orientechnologies.twitter.user;
 
 import com.orientechnologies.orient.core.command.OCommandResultListener;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLAsynchQuery;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import com.orientechnologies.twitter.TweetPersister;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
@@ -14,6 +16,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.api.FriendsFollowersResources;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,6 +47,11 @@ public class TweetUsersToOrientDB {
             ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl).open("admin", "admin");
 
             try {
+
+                final List<ODocument> result = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = false"));
+
+                log.info("users to be fetched:: {} ", result.get(0).field("users").toString());
+
                 db.query(new OSQLAsynchQuery<>("SELECT FROM User where fetched = false LIMIT 5", listener));
             } catch (Exception e) {
                 log.error("error while retrieving");
