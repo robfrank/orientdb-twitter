@@ -29,12 +29,14 @@ public class TweetPersister {
     private final OrientGraphFactory factory;
     private final Meter persisted;
     private final Meter duplicated;
+    private final Meter persistedUsers;
 
     public TweetPersister(OrientGraphFactory factory) {
 
         this.factory = factory;
 
         persisted = METRICS.meter(name("persister", "documents", "persisted"));
+        persistedUsers = METRICS.meter(name("persister", "users", "persisted"));
         duplicated = METRICS.meter(name("persister", "documents", "duplicated"));
     }
 
@@ -194,6 +196,7 @@ public class TweetPersister {
 
     public Vertex storeUser(Status status, OrientBaseGraph graph) {
 
+
         final User userData = status.getUser();
 
         return storeUser(graph, userData);
@@ -224,6 +227,7 @@ public class TweetPersister {
         }};
 
         user.setProperties(props.toArray()).save();
+        persistedUsers.mark();
         return user;
     }
 
