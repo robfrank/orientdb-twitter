@@ -18,6 +18,7 @@ import twitter4j.api.FriendsFollowersResources;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by frank on 12/03/2017.
@@ -48,9 +49,13 @@ public class TweetUsersToOrientDB {
 
             try {
 
-                final List<ODocument> result = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = false"));
+                List<ODocument> result = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = false"));
 
                 log.info("users to be fetched:: {} ", result.get(0).field("users").toString());
+
+                result = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = true"));
+
+                log.info("users fetched:: {} ", result.get(0).field("users").toString());
 
                 db.query(new OSQLAsynchQuery<>("SELECT FROM User where fetched = false LIMIT 5", listener));
             } catch (Exception e) {
@@ -82,38 +87,48 @@ public class TweetUsersToOrientDB {
         }
 
         @Override
-        public boolean result(Object iRecord) {
+        public boolean result(Object record) {
 
             OrientBaseGraph graph = factory.getTx();
 
             try {
-                final OrientVertex user = graph.getVertex(iRecord);
+                final OrientVertex user = graph.getVertex(record);
                 user.setProperty("fetched", true);
                 user.save();
 
-                log.info("getting followers and friends for user {} ", user);
+                log.info("getting followers and friends for user {} - fetched {}", user, user.getProperty("fetched"));
 
                 if (user == null) return false;
 
                 Long userId = user.getProperty("userId");
 
                 try {
-                    followersResources.getFollowersList(userId, -1).stream()
-                            .forEach(follower -> {
-                                        log.info("follower: " + follower.getScreenName());
+                    final String followers = followersResources.getFollowersList(userId, -1, 200).stream()
+                            .map(follower -> {
                                         Vertex vertex = persister.storeUser(graph, follower);
                                         vertex.addEdge("Follows", user);
                                         graph.commit();
+                                        return follower.getScreenName();
                                     }
-                            );
-                    followersResources.getFriendsList(userId, -1).stream()
-                            .forEach(follower -> {
-                                        log.info("friend: " + follower.getScreenName());
-                                        Vertex vertex = persister.storeUser(graph, follower);
-                                        vertex.addEdge("Follows", user);
+                            ).collect(Collectors.joining(", "));
+
+                    log.info("followers for user {} :: {} ", user, followers);
+                } catch (TwitterException e) {
+                    handleRetryAfter(e);
+                }
+
+                try {
+                    final String friends = followersResources.getFriendsList(userId, -1, 200).stream()
+                            .map(friend -> {
+                                        Vertex vertex = persister.storeUser(graph, friend);
+                                        user.addEdge("Follows", vertex);
                                         graph.commit();
+                                        return friend.getScreenName();
                                     }
-                            );
+                            ).collect(Collectors.joining(","));
+
+                    log.info("followers for user {} :: {} ", user, friends);
+
                 } catch (TwitterException e) {
                     handleRetryAfter(e);
                 }
