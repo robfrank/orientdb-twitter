@@ -3,6 +3,7 @@ package com.orientechnologies.twitter.user;
 import com.orientechnologies.orient.core.command.OCommandResultListener;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLAsynchQuery;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import com.orientechnologies.twitter.TweetPersister;
@@ -96,7 +97,7 @@ public class TweetUsersToOrientDB {
 
                 if (user == null) return false;
 
-                graph.command(new OSQLSynchQuery<ODocument>("UDPATE  " + user.getIdentity().toString() + " SET fetched = true")).execute();
+                graph.command(new OCommandSQL("UDPATE  " + user.getIdentity().toString() + " SET fetched = true")).execute();
 
                 log.info("getting followers and friends for user {} - fetched {}", user, user.getProperty("fetched"));
 
