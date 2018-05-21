@@ -93,12 +93,12 @@ public class TweetUsersToOrientDB {
 
             try {
                 final OrientVertex user = graph.getVertex(record);
-                user.setProperty("fetched", true);
-                user.save();
-
-                log.info("getting followers and friends for user {} - fetched {}", user, user.getProperty("fetched"));
 
                 if (user == null) return false;
+
+                graph.command(new OSQLSynchQuery<ODocument>("UDPATE  " + user.getIdentity().toString() + " SET fetched = true")).execute();
+
+                log.info("getting followers and friends for user {} - fetched {}", user, user.getProperty("fetched"));
 
                 Long userId = user.getProperty("userId");
 
