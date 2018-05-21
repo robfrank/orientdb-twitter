@@ -99,7 +99,7 @@ public class TweetUsersToOrientDB {
 
                 graph.command(new OCommandSQL("UPDATE " + user.getIdentity().toString() + " SET fetched = true")).execute();
 
-                log.info("getting followers and friends for user {} - fetched {}", user, user.getProperty("fetched"));
+                log.info("getting followers and friends for user {} ", user);
 
                 Long userId = user.getProperty("userId");
 
@@ -113,7 +113,7 @@ public class TweetUsersToOrientDB {
                                     }
                             ).collect(Collectors.joining(", "));
 
-                    log.info("followers for user {} :: {} ", user, followers);
+                    log.info("followers of user {} :: {} ", user, followers);
                 } catch (TwitterException e) {
                     handleRetryAfter(e);
                 }
@@ -128,21 +128,18 @@ public class TweetUsersToOrientDB {
                                     }
                             ).collect(Collectors.joining(","));
 
-                    log.info("followers for user {} :: {} ", user, friends);
+                    log.info("friends of user {} :: {} ", user, friends);
 
                 } catch (TwitterException e) {
                     handleRetryAfter(e);
                 }
 
-
                 log.info("done for user {} ", userId);
             } catch (Exception e) {
                 log.error("something went wrong ", e);
             } finally {
-
                 graph.shutdown();
             }
-
 
             return true;
         }
@@ -151,7 +148,7 @@ public class TweetUsersToOrientDB {
             if (e.getStatusCode() == 500 || e.exceededRateLimitation()) {
                 RateLimitStatus limitStatus = e.getRateLimitStatus();
 
-                log.warn("rate limit execed, wait for {} seconds", limitStatus.getSecondsUntilReset());
+                log.warn("rate limit exceeded, wait for {} seconds", limitStatus.getSecondsUntilReset());
                 try {
                     TimeUnit.SECONDS.sleep(limitStatus.getSecondsUntilReset());
                 } catch (InterruptedException e1) {

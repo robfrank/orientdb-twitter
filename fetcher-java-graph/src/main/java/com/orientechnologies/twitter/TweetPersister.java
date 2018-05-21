@@ -213,7 +213,7 @@ public class TweetPersister {
             add("screenName");
             add(userData.getScreenName());
             add("fetched");
-            add(false);
+            add(Optional.ofNullable(user.getProperty("fetched")).orElse(Boolean.FALSE));
             Optional.ofNullable(userData.getDescription())
                     .ifPresent(desc -> {
                         add("description");
