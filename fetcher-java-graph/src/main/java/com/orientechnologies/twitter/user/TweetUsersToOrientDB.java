@@ -97,7 +97,7 @@ public class TweetUsersToOrientDB {
 
                 if (user == null) return false;
 
-                graph.command(new OCommandSQL("UDPATE  " + user.getIdentity().toString() + " SET fetched = true")).execute();
+                graph.command(new OCommandSQL("UPDATE " + user.getIdentity().toString() + " SET fetched = true")).execute();
 
                 log.info("getting followers and friends for user {} - fetched {}", user, user.getProperty("fetched"));
 
