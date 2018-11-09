@@ -176,6 +176,21 @@ public class TweetPersister {
             add(status.getCreatedAt());
             add("lang");
             add(status.getLang());
+            add("source");
+            add(status.getSource());
+            add("userScreenName");
+            add(status.getUser().getScreenName());
+            add("userTimeZone");
+            add(status.getUser().getTimeZone());
+            add("userLang");
+            add(status.getUser().getLang());
+
+            Optional.ofNullable(status.getInReplyToScreenName())
+                    .ifPresent(sn -> {
+                        add("inReplyToScreenName");
+                        add(sn);
+                    });
+
             add("isRetweet");
             add(Boolean.valueOf(status.isRetweet()));
             add("isRetweeted");
@@ -225,6 +240,7 @@ public class TweetPersister {
                         add(loc);
                     });
         }};
+
 
         user.setProperties(props.toArray()).save();
         persistedUsers.mark();

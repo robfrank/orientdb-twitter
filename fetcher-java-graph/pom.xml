@@ -3,6 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <maven-shade-plugin.version>3.2.0</maven-shade-plugin.version>
+        <docker-maven-plugin.version>1.2.0</docker-maven-plugin.version>
+        <metrics-core.version>4.0.2</metrics-core.version>
+        <metrics-graphite.version>4.0.2</metrics-graphite.version>
+        <log4j-core.version>2.11.1</log4j-core.version>
+        <log4j-jul.version>2.11.1</log4j-jul.version>
+        <log4j-slf4j-impl.version>2.11.1</log4j-slf4j-impl.version>
+        <json-simple.version>1.1.1</json-simple.version>
+        <twitter4j-stream.version>4.0.7</twitter4j-stream.version>
+        <guava.version>27.0-jre</guava.version>
+        <rxjava.version>2.2.3</rxjava.version>
+        <reactive-streams.version>1.0.2</reactive-streams.version>
+    </properties>
 
     <parent>
         <groupId>com.orientechnologies</groupId>
@@ -21,7 +35,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>${maven-shade-plugin.version}</version>
                 <configuration>
                     <transformers>
                         <transformer
@@ -54,7 +68,7 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>${docker-maven-plugin.version}</version>
                 <configuration>
                     <imageName>twitter2orientdb</imageName>
                     <imageTags>
@@ -92,35 +106,35 @@
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>4.0.2</version>
+            <version>${metrics-core.version}</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-graphite</artifactId>
-            <version>4.0.2</version>
+            <version>${metrics-graphite.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.11.0</version>
+            <version>${log4j-core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jul</artifactId>
-            <version>2.11.0</version>
+            <version>${log4j-jul.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.11.0</version>
+            <version>${log4j-slf4j-impl.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
+            <version>${json-simple.version}</version>
         </dependency>
         <!--<dependency>-->
         <!--<groupId>com.orientechnologies</groupId>-->
@@ -137,24 +151,24 @@
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-stream</artifactId>
-            <version>4.0.6</version>
+            <version>${twitter4j-stream.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>25.0-jre</version>
+            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.reactivex.rxjava2</groupId>
             <artifactId>rxjava</artifactId>
-            <version>2.1.13</version>
+            <version>${rxjava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
-            <version>1.0.2</version>
+            <version>${reactive-streams.version}</version>
         </dependency>
 
 

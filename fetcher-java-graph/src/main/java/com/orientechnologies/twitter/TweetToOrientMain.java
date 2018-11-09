@@ -30,12 +30,12 @@ public class TweetToOrientMain {
         if (createDb)
             TwitterDbUtils.createDbIfNeeded(dbUrl);
 
-        final OrientGraphFactory factory = new OrientGraphFactory(dbUrl, "admin", "admin")
+        final OrientGraphFactory graphFactory = new OrientGraphFactory(dbUrl, "admin", "admin")
                 .setupPool(1, 10);
 
-        final TweetPersister repository = new TweetPersister(factory);
+        final TweetPersister persister = new TweetPersister(graphFactory);
 
-        final TweetToOrientDB tweetToOrientDB = new TweetToOrientDB(repository, keywords, languages);
+        final TweetToOrientDB tweetToOrientDB = new TweetToOrientDB(persister, keywords, languages);
 
         tweetToOrientDB.start();
 
