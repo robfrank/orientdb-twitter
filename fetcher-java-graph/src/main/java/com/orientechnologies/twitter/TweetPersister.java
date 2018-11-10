@@ -210,7 +210,6 @@ public class TweetPersister {
                     });
         }};
 
-        log.info("props:: {}", props);
         orientVertex.setProperties(props.toArray()).save();
 
         return orientVertex;
