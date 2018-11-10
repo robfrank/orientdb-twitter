@@ -177,11 +177,17 @@ public class TweetPersister {
             add("lang");
             add(status.getLang());
             add("source");
-            add(status.getSource());
+            add(cleanUpHtml(status.getSource()));
             add("userScreenName");
             add(status.getUser().getScreenName());
-            add("userTimeZone");
-            add(status.getUser().getTimeZone());
+
+            Optional.ofNullable(status.getUser().getTimeZone())
+                    .ifPresent(sn -> {
+                        add("userTimeZone");
+                        add(sn);
+                    });
+
+
             add("userLang");
             add(status.getUser().getLang());
 
@@ -204,6 +210,7 @@ public class TweetPersister {
                     });
         }};
 
+        log.info("props:: {}", props);
         orientVertex.setProperties(props.toArray()).save();
 
         return orientVertex;
