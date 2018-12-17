@@ -30,7 +30,8 @@ public class TweetUsersToOrientDB {
     private final String dbUrl;
 
     public TweetUsersToOrientDB() {
-        dbUrl = System.getProperty("tw2odb.dbUrl", "remote:localhost/tweets");
+        dbUrl = System.getProperty("tw2odb.dbUrl", "plocal:./tweets");
+
 
     }
 
@@ -99,6 +100,8 @@ public class TweetUsersToOrientDB {
 
                 graph.command(new OCommandSQL("UPDATE " + user.getIdentity().toString() + " SET fetched = true")).execute();
 
+                user.reload();
+
                 log.info("getting followers and friends for user {} ", user);
 
                 Long userId = user.getProperty("userId");
@@ -107,10 +110,7 @@ public class TweetUsersToOrientDB {
                     final String followers = followersResources.getFollowersList(userId, -1, 200).stream()
                             .map(follower -> {
                                         Vertex followerVertex = persister.storeUser(graph, follower);
-                                        graph.commit();
-//                                        followerVertex.addEdge("Follows", user);
                                         graph.addEdge("class:Follows", followerVertex, user, null);
-
                                         graph.commit();
                                         return follower.getScreenName();
                                     }
@@ -125,11 +125,7 @@ public class TweetUsersToOrientDB {
                     final String friends = followersResources.getFriendsList(userId, -1, 200).stream()
                             .map(friend -> {
                                         Vertex vertex = persister.storeUser(graph, friend);
-                                        graph.commit();
-
-//                                        user.addEdge("Follows", vertex);
                                         graph.addEdge("class:Follows", vertex, user, null);
-
                                         graph.commit();
                                         return friend.getScreenName();
                                     }
