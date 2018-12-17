@@ -107,7 +107,7 @@ public class TweetUsersToOrientDB {
                     final String followers = followersResources.getFollowersList(userId, -1, 200).stream()
                             .map(follower -> {
                                         Vertex followerVertex = persister.storeUser(graph, follower);
-
+                                        graph.commit();
 //                                        followerVertex.addEdge("Follows", user);
                                         graph.addEdge("class:Follows", followerVertex, user, null);
 
@@ -125,6 +125,7 @@ public class TweetUsersToOrientDB {
                     final String friends = followersResources.getFriendsList(userId, -1, 200).stream()
                             .map(friend -> {
                                         Vertex vertex = persister.storeUser(graph, friend);
+                                        graph.commit();
 
 //                                        user.addEdge("Follows", vertex);
                                         graph.addEdge("class:Follows", vertex, user, null);
