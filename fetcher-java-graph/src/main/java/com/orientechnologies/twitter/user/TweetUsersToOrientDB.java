@@ -118,6 +118,7 @@ public class TweetUsersToOrientDB {
                     final String followers = followersResources.getFollowersList(userId, -1, 200).stream()
                             .map(follower -> {
                                         Vertex followerVertex = persister.storeUser(graph, follower);
+                                        graph.commit();
 
                                         final Iterable<ODocument> execute = graph.command(new OSQLSynchQuery<>("select from " + followerVertex.getId() + " where out('Follows').@rid contains " + user.getId()))
                                                 .execute();
