@@ -1,10 +1,10 @@
 package com.orientechnologies.twitter.user;
 
 import com.orientechnologies.orient.core.command.OCommandResultListener;
+import com.orientechnologies.orient.core.db.OPartitionedDatabasePool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.sql.OCommandSQL;
-import com.orientechnologies.orient.core.sql.query.OSQLAsynchQuery;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import com.orientechnologies.twitter.TweetPersister;
 import com.tinkerpop.blueprints.Vertex;
@@ -46,27 +46,35 @@ public class TweetUsersToOrientDB {
         OCommandResultListener listener = new UserResultListener(repository, factory);
 
 
+        OPartitionedDatabasePool pool = new OPartitionedDatabasePool(dbUrl, "admin", "admin");
+
         while (true) {
-            ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbUrl).open("admin", "admin");
+            ODatabaseDocumentTx db = pool.acquire();
 
             try {
 
-                List<ODocument> result = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = false"));
+                List<ODocument> results = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = false"));
 
-                log.info("users to be fetched:: {} ", result.get(0).field("users").toString());
+                log.info("users to be fetched:: {} ", results.get(0).field("users").toString());
 
-                result = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = true"));
+                results = db.query(new OSQLSynchQuery<>("SELECT count(*) AS users FROM User where fetched = true"));
 
-                log.info("users fetched:: {} ", result.get(0).field("users").toString());
+                log.info("users fetched:: {} ", results.get(0).field("users").toString());
 
-                db.query(new OSQLAsynchQuery<>("SELECT FROM User where fetched = false LIMIT 5", listener));
+                final List<ODocument> users = db.query(new OSQLSynchQuery<ODocument>("SELECT FROM User where fetched = false LIMIT 5"));
+
+                users.stream()
+                        .forEach(uer -> listener.result(uer));
+
+
             } catch (Exception e) {
-                log.error("error while retrieving");
+                log.error("error while retrieving", e);
             } finally {
                 db.activateOnCurrentThread();
                 db.close();
             }
         }
+//                pool.close();
 
     }
 
@@ -98,9 +106,9 @@ public class TweetUsersToOrientDB {
 
                 if (user == null) return false;
 
-                graph.command(new OCommandSQL("UPDATE " + user.getIdentity().toString() + " SET fetched = true")).execute();
+                user.setProperty("fetched", true, OType.BOOLEAN);
 
-                user.reload();
+                user.save();
 
                 log.info("getting followers and friends for user {} ", user);
 
@@ -110,7 +118,13 @@ public class TweetUsersToOrientDB {
                     final String followers = followersResources.getFollowersList(userId, -1, 200).stream()
                             .map(follower -> {
                                         Vertex followerVertex = persister.storeUser(graph, follower);
-                                        graph.addEdge("class:Follows", followerVertex, user, null);
+
+                                        final Iterable<ODocument> execute = graph.command(new OSQLSynchQuery<>("select from " + followerVertex.getId() + " where out('Follows').@rid contains " + user.getId()))
+                                                .execute();
+
+                                        if (!execute.iterator().hasNext()) {
+                                            graph.addEdge("class:Follows", followerVertex, user, null);
+                                        }
                                         graph.commit();
                                         return follower.getScreenName();
                                     }
@@ -125,6 +139,12 @@ public class TweetUsersToOrientDB {
                     final String friends = followersResources.getFriendsList(userId, -1, 200).stream()
                             .map(friend -> {
                                         Vertex vertex = persister.storeUser(graph, friend);
+                                        final Iterable<ODocument> execute = graph.command(new OSQLSynchQuery<>("select from " + vertex.getId() + " where out('Follows').@rid contains " + user.getId()))
+                                                .execute();
+
+                                        if (!execute.iterator().hasNext()) {
+                                            graph.addEdge("class:Follows", vertex, user, null);
+                                        }
                                         graph.addEdge("class:Follows", vertex, user, null);
                                         graph.commit();
                                         return friend.getScreenName();
