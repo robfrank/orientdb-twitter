@@ -125,14 +125,15 @@ public class TweetPersister {
 
         Arrays.stream(status.getHashtagEntities())
                 .forEach(hashtag -> {
-                    Vertex prevTag = graph.getVertexByKey("Hashtag.label", hashtag.getText().toLowerCase());
+                    final String label = hashtag.getText().toLowerCase();
+                    Vertex prevTag = graph.getVertexByKey("Hashtag.label", label);
 
                     if (prevTag != null) {
                         graph.addEdge("class:Tags", prevTag, tweet, null);
 
                     } else {
 
-                        OrientVertex tag = graph.addVertex("class:Hashtag", "label", hashtag.getText().toLowerCase());
+                        OrientVertex tag = graph.addVertex("class:Hashtag", "label", label);
                         graph.addEdge("class:Tags", tag, tweet, null);
                     }
                 });
@@ -142,7 +143,9 @@ public class TweetPersister {
 
         if (status.getSource() != null) {
 
-            String source = cleanUpHtml(status.getSource());
+            String source = cleanUpHtml(status.getSource())
+                    .replace("twitter for", "")
+                    .replace("twitter", "");
 
             Vertex prevSource = graph.getVertexByKey("Source.name", source);
 
