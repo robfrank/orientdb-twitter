@@ -148,7 +148,6 @@ public class TweetUsersToOrientDB {
                                         if (!execute.iterator().hasNext()) {
                                             graph.addEdge("class:Follows", vertex, user, null);
                                         }
-                                        graph.addEdge("class:Follows", vertex, user, null);
                                         graph.commit();
                                         return friend.getScreenName();
                                     }
