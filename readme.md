@@ -4,7 +4,7 @@ This is a set of projects used while presenting OrientDB capabilities, such as r
 
 To run this application you need to provide Twitter's oauth tokens: https://dev.twitter.com/oauth/overview/application-owner-access-tokens
 
-## Twitter fetcher 
+## Tweets fetcher 
 
 The fetcher module is in charge to fetch data from the Twitter stream. 
 
@@ -82,8 +82,28 @@ docker run --name odb-fetcher -d --link orientdb:orientdb \
 
 ```
 
+## Users fetcher
 
-Properties
+The fetcher provides a module able to retrieve users followers and friends. The component retrieves the Users fetched before and queries Twitter for followers and friends
+To activate it:
+
+```
+docker run --name odb-fetcher -d --link orientdb:orientdb \
+    orientdb/orientdb-twitter-user-fetcher-java-graph \
+    java \
+    -Dtwitter4j.oauth.consumerKey=YOUR_CONSUMER_KEY\
+    -Dtwitter4j.oauth.consumerSecret=YOUR_CONSUMET_SECRET \
+    -Dtwitter4j.oauth.accessToken=YOUR_ACCES_TOKEN \
+    -Dtwitter4j.oauth.accessTokenSecret=YOUR_ACCES_TOKEN_SECRET \
+      -Dtw2odb.dbUrl=remote:orientdb/tweets \
+      -Dtw2odb.graphite=false \
+        it.robfrank.twitter.user.TweetUsersFetcherMain  \
+    -jar orientdb-twitter-fetcher.jar
+
+```
+
+
+##Properties
 
 | name  | description|default | example| 
 |---|---|---|---|
@@ -97,8 +117,9 @@ Properties
 | tw2odb.createDb |create a new db| true|-Dtw2odb.createDb=true|
 
      
+## Compose
 
-
+Take a look at the Docker compose files the fetcher module
 
 
 
