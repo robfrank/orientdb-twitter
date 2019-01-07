@@ -1,0 +1,13 @@
+language: java
+service: docker
+notifications:
+  email:
+    - ro.franchini@gmail.com
+
+before_install:
+  - docker version
+  - docker info
+after_success:
+  -
+jdk:
+  - openjdk8

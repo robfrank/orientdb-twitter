@@ -27,7 +27,7 @@ node {
             }
         }
 
-        stage('build') {
+        stage('docker') {
             sh "cd fetcher-java-graph;../mvnw docker:build"
         }
 
