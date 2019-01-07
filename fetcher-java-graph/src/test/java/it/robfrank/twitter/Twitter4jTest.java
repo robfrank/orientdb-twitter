@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter;
+package it.robfrank.twitter;
 
 import com.google.common.collect.Lists;
 import com.orientechnologies.orient.core.command.OCommandRequest;

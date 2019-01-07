@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter.live;
+package it.robfrank.twitter.live;
 
 import com.codahale.metrics.Meter;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -7,13 +7,13 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OLiveQuery;
 import com.orientechnologies.orient.core.sql.query.OLiveResultListener;
+import it.robfrank.twitter.TweetMetrics;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static com.codahale.metrics.MetricRegistry.name;
-import static com.orientechnologies.twitter.TweetMetrics.METRICS;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -65,7 +65,7 @@ public class TweetLiveStreamReader {
     private static class MyOLiveResultListener implements OLiveResultListener {
 
         private final ODatabaseDocumentTx db;
-        Meter fetched = METRICS.meter(name("live", "documents", "fetched"));
+        Meter fetched = TweetMetrics.METRICS.meter(name("live", "documents", "fetched"));
 
         public MyOLiveResultListener(ODatabaseDocumentTx db) {
 

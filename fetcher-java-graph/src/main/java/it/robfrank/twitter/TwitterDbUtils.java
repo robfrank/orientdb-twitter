@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter;
+package it.robfrank.twitter;
 
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 import com.orientechnologies.orient.core.command.script.OCommandScript;

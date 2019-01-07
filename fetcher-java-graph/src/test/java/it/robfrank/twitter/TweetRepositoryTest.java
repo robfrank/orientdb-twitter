@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter;
+package it.robfrank.twitter;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;

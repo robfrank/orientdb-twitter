@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter;
+package it.robfrank.twitter;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import lombok.extern.log4j.Log4j2;

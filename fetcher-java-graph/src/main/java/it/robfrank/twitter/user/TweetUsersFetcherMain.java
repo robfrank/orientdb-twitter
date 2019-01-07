@@ -1,6 +1,6 @@
-package com.orientechnologies.twitter.user;
+package it.robfrank.twitter.user;
 
-import com.orientechnologies.twitter.TweetMetrics;
+import it.robfrank.twitter.TweetMetrics;
 import lombok.extern.log4j.Log4j2;
 
 /**

@@ -1,9 +1,9 @@
-package com.orientechnologies.twitter.live;
+package it.robfrank.twitter.live;
 
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.shutdown.OShutdownHandler;
-import com.orientechnologies.twitter.TweetMetrics;
-import com.orientechnologies.twitter.TweetToOrientMain;
+import it.robfrank.twitter.TweetMetrics;
+import it.robfrank.twitter.TweetToOrientMain;
 import lombok.extern.log4j.Log4j2;
 
 /**

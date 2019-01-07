@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter;
+package it.robfrank.twitter;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;

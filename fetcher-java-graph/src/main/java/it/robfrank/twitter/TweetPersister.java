@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter;
+package it.robfrank.twitter;
 
 import com.codahale.metrics.Meter;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.codahale.metrics.MetricRegistry.name;
-import static com.orientechnologies.twitter.TweetMetrics.METRICS;
+import static it.robfrank.twitter.TweetMetrics.METRICS;
 import static java.util.Arrays.asList;
 
 /**

@@ -1,4 +1,4 @@
-package com.orientechnologies.twitter;
+package it.robfrank.twitter;
 
 import com.codahale.metrics.Meter;
 import com.google.common.base.Splitter;
@@ -10,7 +10,7 @@ import twitter4j.Status;
 import java.util.List;
 
 import static com.codahale.metrics.MetricRegistry.name;
-import static com.orientechnologies.twitter.TweetMetrics.METRICS;
+import static it.robfrank.twitter.TweetMetrics.METRICS;
 
 /**
  * Created by frank on 13/03/2016.
