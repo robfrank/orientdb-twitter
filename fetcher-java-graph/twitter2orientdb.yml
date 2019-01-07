@@ -1,0 +1,17 @@
+version: '3'
+services:
+  twitter-fetcher:
+    image: twitter2orientdb
+    command: "java \
+      -Dtwitter4j.oauth.consumerKey=<YOUR KEY> \
+      -Dtwitter4j.oauth.consumerSecret=<YOUR SECRET>  \
+      -Dtwitter4j.oauth.accessToken=<YOUR TOKEN>  \
+      -Dtwitter4j.oauth.accessTokenSecret=<YOUR TOKEN SECRET> \
+      -Dtw2odb.dbServerUser=root \
+      -Dtw2odb.dbServerPasswd=arcade \
+      -Dtw2odb.dbUrl=remote:orientdb/tweets \
+      -Dtw2odb.graphite=false \
+      -Dtw2odb.createDb=true \
+      -Dtw2odb.langs=\"en,it\" \
+      -Dtw2odb.keywords=\"cloud,aws,azure,gce,blockchain,bitcoin,ethereum,cryptocurrency\" \
+      -jar twitter-fetcher.jar"

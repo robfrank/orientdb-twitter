@@ -1,0 +1,12 @@
+version: '3'
+services:
+  twitter-user-fetcher:
+    image: twitter2orientdb
+    command: "java -cp ./twitter-fetcher.jar \
+      -Dtwitter4j.oauth.consumerKey=<YOUR KEY> \
+      -Dtwitter4j.oauth.consumerSecret=<YOUR SECRET>  \
+      -Dtwitter4j.oauth.accessToken=<YOUR TOKEN>  \
+      -Dtwitter4j.oauth.accessTokenSecret=<YOUR TOKEN SECRET> \
+      -Dtw2odb.dbUrl=remote:orientdb/tweets \
+      -Dtw2odb.graphite=false \
+        it.robfrank.twitter.user.TweetUsersFetcherMain  "
