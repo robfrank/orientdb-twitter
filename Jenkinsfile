@@ -3,6 +3,10 @@
 node {
     try {
 
+        properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '10', daysToKeepStr: '10', numToKeepStr: '10')), disableConcurrentBuilds()])
+
+        cleanWs()
+
         stage('checkout') {
             checkout scm
         }
