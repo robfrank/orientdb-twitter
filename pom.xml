@@ -29,7 +29,7 @@
         <orient.version>2.2.37</orient.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <junit.version>4.12</junit.version>
-        <assertj-core.version>3.11.1</assertj-core.version>
+        <assertj-core.version>3.12.2</assertj-core.version>
         <lombok.version>1.18.4</lombok.version>
     </properties>
     <repositories>
