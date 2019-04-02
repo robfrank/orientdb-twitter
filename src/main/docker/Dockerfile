@@ -5,7 +5,7 @@
 
 FROM azul/zulu-openjdk:8
 
-MAINTAINER OrientDB LTD (info@orientdb.com)
+MAINTAINER Roberto Franchini (ro.franchini@gmail.com)
 
 ADD twitter-fetcher.jar /
 
