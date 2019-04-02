@@ -39,7 +39,7 @@ public class Twitter4jTest {
     twitterStream.onStatus(this::statusPrinter);
 
     FilterQuery qry = new FilterQuery();
-    qry.language("it", "en")
+    qry.language("src/main/java/it", "en")
         .track("devops", "programming", "codemotion", "cloud", "java", "nodejs",
             "agile", "scrum", "bigdata", "spark", "scala", "akka",
             "orientdb", "graphdb", "neo4j", "cassandra", "tdd", "nosql"
