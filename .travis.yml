@@ -7,7 +7,9 @@ notifications:
 before_install:
   - docker version
   - docker info
-after_success:
-  -
+
+script:
+  - ./mvnw clean install docker:build -fae
+
 jdk:
   - openjdk8
