@@ -95,8 +95,6 @@
 
     <modules>
         <module>fetcher-java-graph</module>
-        <!--<module>fetcher-kotlin-sql</module>-->
-
     </modules>
 
 </project>
