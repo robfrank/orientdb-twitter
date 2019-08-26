@@ -15,7 +15,7 @@
         <twitter4j-stream.version>4.0.7</twitter4j-stream.version>
         <guava.version>28.0-jre</guava.version>
         <rxjava.version>2.2.11</rxjava.version>
-        <reactive-streams.version>1.0.2</reactive-streams.version>
+        <reactive-streams.version>1.0.3</reactive-streams.version>
         <orient.version>2.2.37</orient.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <junit.version>4.12</junit.version>
