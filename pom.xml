@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <properties>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
-        <docker-maven-plugin.version>1.2.0</docker-maven-plugin.version>
+        <docker-maven-plugin.version>1.2.1</docker-maven-plugin.version>
         <metrics-core.version>4.1.1</metrics-core.version>
         <metrics-graphite.version>4.1.0</metrics-graphite.version>
         <log4j-core.version>2.12.1</log4j-core.version>
