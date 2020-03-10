@@ -8,7 +8,7 @@
         <docker-maven-plugin.version>1.2.2</docker-maven-plugin.version>
         <metrics-core.version>4.1.5</metrics-core.version>
         <metrics-graphite.version>4.1.5</metrics-graphite.version>
-        <log4j-core.version>2.13.0</log4j-core.version>
+        <log4j-core.version>2.13.1</log4j-core.version>
         <log4j-jul.version>2.13.1</log4j-jul.version>
         <log4j-slf4j-impl.version>2.13.1</log4j-slf4j-impl.version>
         <json-simple.version>1.1.1</json-simple.version>
