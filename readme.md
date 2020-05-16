@@ -1,3 +1,5 @@
+![CI](https://github.com/robfrank/orientdb-twitter/workflows/CI/badge.svg)
+
 ### OrientDB Twitter demo
 
 This is a set of projects used while presenting OrientDB capabilities, such as relationship management through graph data modelling and fulltext search index.
