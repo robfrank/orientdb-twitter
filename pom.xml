@@ -7,7 +7,7 @@
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <docker-maven-plugin.version>1.2.2</docker-maven-plugin.version>
         <metrics-graphite.version>4.1.12.1</metrics-graphite.version>
-        <metrics-core.version>4.1.10.1</metrics-core.version>
+        <metrics-core.version>4.1.12.1</metrics-core.version>
         <log4j-core.version>2.13.3</log4j-core.version>
         <log4j-jul.version>2.13.3</log4j-jul.version>
         <log4j-slf4j-impl.version>2.13.3</log4j-slf4j-impl.version>
