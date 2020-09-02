@@ -32,7 +32,7 @@ jobs:
           java-version: 1.8
 
       - name: Build with Maven
-        run: mvn verify docker:build -fae --file pom.xml
+        run: mvn verify docker:build -fae --file --quiet pom.xml
 
       - name: Publish Test Reports
         uses: codecov/codecov-action@v1
