@@ -19,7 +19,7 @@
         <orient.version>2.2.37</orient.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <junit.version>4.13.1</junit.version>
-        <assertj-core.version>3.18.0</assertj-core.version>
+        <assertj-core.version>3.19.0</assertj-core.version>
         <lombok.version>1.18.16</lombok.version>
 
     </properties>
