@@ -18,7 +18,7 @@
         <reactive-streams.version>1.0.3</reactive-streams.version>
         <orient.version>2.2.37</orient.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <junit.version>4.13.1</junit.version>
+        <junit.version>4.13.2</junit.version>
         <assertj-core.version>3.19.0</assertj-core.version>
         <lombok.version>1.18.18</lombok.version>
 
