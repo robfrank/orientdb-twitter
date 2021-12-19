@@ -8,9 +8,9 @@
         <docker-maven-plugin.version>1.2.2</docker-maven-plugin.version>
         <metrics-core.version>4.2.0</metrics-core.version>
         <metrics-graphite.version>4.2.3</metrics-graphite.version>
-        <log4j-core.version>2.14.1</log4j-core.version>
+        <log4j-core.version>2.17.0</log4j-core.version>
         <log4j-jul.version>2.14.1</log4j-jul.version>
-        <log4j-slf4j-impl.version>2.14.1</log4j-slf4j-impl.version>
+        <log4j-slf4j-impl.version>2.17.0</log4j-slf4j-impl.version>
         <json-simple.version>1.1.1</json-simple.version>
         <twitter4j-stream.version>4.0.7</twitter4j-stream.version>
         <guava.version>30.1.1-jre</guava.version>
