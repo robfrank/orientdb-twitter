@@ -20,7 +20,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <junit.version>4.13.2</junit.version>
         <assertj-core.version>3.21.0</assertj-core.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
 
     </properties>
 
