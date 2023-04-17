@@ -35,4 +35,4 @@ jobs:
         run: mvn verify docker:build -fae --quiet --file pom.xml
 
       - name: Publish Test Reports
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.1.2
