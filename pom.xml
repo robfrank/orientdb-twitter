@@ -13,7 +13,7 @@
         <log4j-slf4j-impl.version>2.17.0</log4j-slf4j-impl.version>
         <json-simple.version>1.1.1</json-simple.version>
         <twitter4j-stream.version>4.0.7</twitter4j-stream.version>
-        <guava.version>30.1.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <rxjava.version>2.2.21</rxjava.version>
         <reactive-streams.version>1.0.3</reactive-streams.version>
         <orient.version>3.0.0</orient.version>
