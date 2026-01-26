@@ -3,7 +3,7 @@
 # for current developed version
 ############################################################
 
-FROM azul/zulu-openjdk:8
+FROM azul/zulu-openjdk:8u482-8.92-jre-headless
 
 MAINTAINER Roberto Franchini (ro.franchini@gmail.com)
 
